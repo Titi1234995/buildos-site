@@ -1,0 +1,46 @@
+# BuildOS Llama 4 Fine-Tuning Configuration
+model:
+  base_model: "meta-llama/Llama-4-70b-chat-hf"
+  load_in_8bit: false
+  load_in_4bit: true
+  bnb_4bit_quant_type: "nf4"
+  bnb_4bit_compute_dtype: "bfloat16"
+  bnb_4bit_use_double_quant: true
+
+lora:
+  r: 64
+  alpha: 128
+  dropout: 0.1
+  target_modules:
+    - "q_proj"
+    - "v_proj"
+    - "k_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+  bias: "none"
+  task_type: "CAUSAL_LM"
+
+training:
+  output_dir: "./outputs/buildos-llama4-v1"
+  num_train_epochs: 3
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 8
+  learning_rate: 2.0e-4
+  warmup_steps: 100
+  logging_steps: 25
+  save_steps: 500
+  eval_steps: 500
+  save_total_limit: 3
+  fp16: false
+  bf16: true
+  optim: "adamw_8bit"
+  lr_scheduler_type: "cosine"
+  max_grad_norm: 1.0
+
+dataset:
+  path: "./data/contracts_dataset.jsonl"
+  validation_split: 0.05
+  max_length: 4096
+  packing: false

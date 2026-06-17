@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  vllm:
+    image: vllm/vllm-openai:latest
+    command: >
+      --model /models/buildos-llama4
+      --tensor-parallel-size 2
+      --gpu-memory-utilization 0.9
+      --port 8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - /mnt/models:/models:ro
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 2
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  document-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.ml
+    environment:
+      - MODEL_ENDPOINT=http://vllm:8000/v1
+      - QDRANT_HOST=qdrant
+    ports:
+      - "8080:8080"
+    depends_on:
+      - vllm
+      - qdrant
+    restart: unless-stopped
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    volumes:
+      - qdrant_data:/qdrant/storage
+    restart: unless-stopped
+
+volumes:
+  qdrant_data:
