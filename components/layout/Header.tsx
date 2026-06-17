@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Menu, X } from 'lucide-react';
@@ -33,21 +34,21 @@ export function Header() {
       )}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-        <a href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <span className="text-2xl font-black tracking-tight">
             <span className="text-brand-400">Build</span>OS
           </span>
-        </a>
+        </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
           {NAV_ITEMS.map((item) => (
-            <a
+            <Link
               key={item.href}
               href={item.href}
               className="text-sm font-medium text-white/60 transition-colors hover:text-white"
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -69,9 +70,9 @@ export function Header() {
         <div className="border-t border-white/[0.06] bg-surface-800 px-6 py-6 md:hidden">
           <nav className="flex flex-col gap-4">
             {NAV_ITEMS.map((item) => (
-              <a key={item.href} href={item.href} className="text-sm font-medium text-white/60">
+              <Link key={item.href} href={item.href} className="text-sm font-medium text-white/60">
                 {item.label}
-              </a>
+              </Link>
             ))}
             <div className="mt-4 flex flex-col gap-3">
               <Button variant="ghost" size="md" className="w-full">Sign In</Button>
